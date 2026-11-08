@@ -771,7 +771,38 @@ document.addEventListener("submit", async e => {
 window.addEventListener("hashchange", () => { render(); scrollTo(0, 0); });
 window.addEventListener("resize", runden_linie);
 
+// Ouvertüre: kleine Motion Graphic beim Öffnen, einmal pro Sitzung. Tippen oder eine Taste überspringt sie.
+function ouverture(o){
+  try { if (sessionStorage.getItem(o.key)) return false; sessionStorage.setItem(o.key, "1"); } catch (e) { return false; }
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return false;
+  let k = 0;
+  const pl = 'pathLength="1"';
+  const epi = side => `<svg class="ov-epi ${side}" viewBox="0 0 24 80" fill="none" stroke="currentColor" stroke-width="1.15" stroke-linecap="round" aria-hidden="true">
+    <path ${pl} style="--k:${k = 0}" d="M12 79C12 60 12 30 12 9"/><ellipse ${pl} style="--k:${++k}" cx="12" cy="6.5" rx="2.4" ry="5"/>
+    ${[15, 23, 31, 39, 47, 55].map(y => `<ellipse ${pl} style="--k:${++k}" cx="8.4" cy="${y}" rx="2.4" ry="5" transform="rotate(-30 8.4 ${y})"/><ellipse ${pl} style="--k:${k}" cx="15.6" cy="${y}" rx="2.4" ry="5" transform="rotate(30 15.6 ${y})"/>`).join("")}
+    <path ${pl} style="--k:2" d="M9.8 3 7.4-4M14.2 3l2.4-7"/></svg>`;
+  const seal = `<svg class="ov-seal" viewBox="0 0 100 100" aria-hidden="true"><defs><path id="ovsc" d="M50 50m-37 0a37 37 0 1 1 74 0a37 37 0 1 1-74 0"/></defs>
+    <circle class="s-bg" cx="50" cy="50" r="49"/><circle class="s-ln" cx="50" cy="50" r="45.5"/><circle class="s-ln" cx="50" cy="50" r="29"/>
+    <g class="ov-rot"><text font-family="Newsreader,Georgia,serif" font-size="8.4" font-weight="600" letter-spacing="1.4"><textPath href="#ovsc" textLength="228" lengthAdjust="spacing">${o.ring}</textPath></text></g>
+    <text x="50" y="62" text-anchor="middle" font-family="Bodoni Moda,Didot,serif" font-size="34" font-style="italic" font-weight="500">${o.mono}</text></svg>`;
+  const el = document.createElement("div");
+  el.id = "ov"; el.setAttribute("aria-hidden", "true");
+  el.innerHTML = `<div class="ov-in"><div class="ov-crest">${epi("l")}${epi("r")}<span class="ov-ring"></span>${seal}</div>
+    <div class="ov-kick">${o.kick}</div><div class="ov-title">${[...o.title].map((c, i) => `<span style="--i:${i}">${c === " " ? "&nbsp;" : c}</span>`).join("")}</div>
+    <div class="ov-rule"></div><div class="ov-date">${o.date}</div>${o.hand ? `<div class="ov-hand">${o.hand}</div>` : ""}</div><div class="ov-skip">Tippen zum Überspringen</div>`;
+  document.body.appendChild(el);
+  let done = false;
+  const out = () => { if (done) return; done = true; removeEventListener("keydown", out); el.classList.add("out"); if (o.onOut) setTimeout(o.onOut, 120); setTimeout(() => el.remove(), 780); };
+  el.addEventListener("pointerdown", out);
+  addEventListener("keydown", out);
+  setTimeout(out, o.ms || (o.hand ? 3000 : 2350));
+  return true;
+}
+
 (async () => {
+  // Ouvertüre einmal pro Sitzung, danach setzt sich der große Titel auf der Startseite
+  ouverture({hand:"bon voyage", key:"enroute-ov", mono:"F", ring:"EN ROUTE · FRANÇAIS · POUR DEUX ·", kick:"Français pour deux", title:"En route", date:esc(datumText()),
+    onOut:() => { try { sessionStorage.removeItem("enroute-mast"); } catch (e) {} if (C && !route().length) render(); }});
   try { await loadContent(); } catch (e) { $("#app").innerHTML = `<p class="foot">Die Inhalte konnten nicht geladen werden. Bist du online?</p>`; return; }
   render();
   initAuth();
