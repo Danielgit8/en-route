@@ -1,0 +1,263 @@
+{
+  "stimmen": {
+    "roussel":   {"name": "Madame Roussel", "rolle": "Nachbarin", "el": "1cNpTcbDy2UA0duXppd5", "edge": "fr-FR-DeniseNeural"},
+    "jonas":     {"name": "Jonas", "rolle": "neu in Frankreich", "el": "stYaAhI2xTaJ48ozXkGt", "edge": "fr-FR-HenriNeural"},
+    "boulanger": {"name": "Le boulanger", "rolle": "Bäcker", "el": "Xy5q4w05TJGcKXPWeWoz", "edge": "fr-FR-RemyMultilingualNeural"},
+    "anna":      {"name": "Anna", "rolle": "neu in Frankreich", "el": "Y2uuwzlt8SyNkjrPovVI", "edge": "fr-FR-EloiseNeural"},
+    "fromagere": {"name": "La fromagère", "rolle": "Käsehändlerin", "el": "NEjemlRxgWmL5ZGJetsB", "edge": "fr-FR-VivienneMultilingualNeural"},
+    "lm":        {"name": "Du", "rolle": "Lernstimme männlich", "el": "stYaAhI2xTaJ48ozXkGt", "edge": "fr-FR-HenriNeural"},
+    "lf":        {"name": "Du", "rolle": "Lernstimme weiblich", "el": "Y2uuwzlt8SyNkjrPovVI", "edge": "fr-FR-EloiseNeural"}
+  },
+  "etappen": [
+    {
+      "id": "e1",
+      "nr": 1,
+      "titel": "Ankommen",
+      "fr": "L'arrivée",
+      "niveau": "A1",
+      "motiv": "schluessel",
+      "ziel": "Du kannst dich vorstellen, sagen, woher du kommst, und nachfragen, wenn du was nicht verstehst.",
+      "szene": "Ihr tragt gerade die letzten Kisten ins neue Haus. Die Nachbarin kommt rüber.",
+      "sprecher": {"A": "roussel", "B": "jonas"},
+      "dialog": [
+        {"s": "A", "fr": "Bonjour ! Vous êtes les nouveaux voisins ?", "de": "Hallo! Sind Sie die neuen Nachbarn?"},
+        {"s": "B", "fr": "Bonjour ! Oui, on vient d'arriver.", "de": "Hallo! Ja, wir sind gerade angekommen."},
+        {"s": "A", "fr": "Ah, bienvenue ! Moi, c'est Madame Roussel. J'habite juste à côté.", "de": "Ach, willkommen! Ich bin Madame Roussel. Ich wohne gleich nebenan."},
+        {"s": "B", "fr": "Enchanté. Je m'appelle Jonas.", "de": "Freut mich. Ich heiße Jonas."},
+        {"s": "A", "fr": "Vous êtes d'où ?", "de": "Woher kommen Sie?"},
+        {"s": "B", "fr": "On vient d'Allemagne. Je suis allemand.", "de": "Wir kommen aus Deutschland. Ich bin Deutscher."},
+        {"s": "A", "fr": "Ah, d'Allemagne ! Et vous êtes là pour longtemps ?", "de": "Ah, aus Deutschland! Und sind Sie für länger hier?"},
+        {"s": "B", "fr": "Pardon, je ne comprends pas. Vous pouvez répéter plus lentement ?", "de": "Entschuldigung, ich verstehe nicht. Können Sie das langsamer wiederholen?"},
+        {"s": "A", "fr": "Bien sûr. Vous restez longtemps ici ?", "de": "Klar. Bleiben Sie lange hier?"},
+        {"s": "B", "fr": "Ah, oui ! On veut rester. On veut vivre en France.", "de": "Ach so, ja! Wir wollen bleiben. Wir wollen in Frankreich leben."},
+        {"s": "A", "fr": "C'est super ! Vous parlez déjà bien français.", "de": "Das ist toll! Sie sprechen schon gut Französisch."},
+        {"s": "B", "fr": "Oh, je parle un peu. J'apprends.", "de": "Ach, ich spreche ein bisschen. Ich lerne noch."},
+        {"s": "A", "fr": "Si vous avez besoin de quelque chose, n'hésitez pas.", "de": "Wenn Sie etwas brauchen, sagen Sie einfach Bescheid."},
+        {"s": "B", "fr": "Merci, c'est gentil.", "de": "Danke, das ist nett."},
+        {"s": "A", "fr": "Je vous en prie. Bonne installation !", "de": "Gern. Gutes Einleben!"},
+        {"s": "B", "fr": "Merci, bonne journée !", "de": "Danke, schönen Tag noch!"}
+      ],
+      "fragen": [
+        {"q": "Wer spricht Jonas an?", "o": ["Die Nachbarin", "Die Vermieterin", "Eine Verkäuferin"], "a": 0},
+        {"q": "Woher kommt Jonas?", "o": ["Aus Belgien", "Aus Deutschland", "Aus der Schweiz"], "a": 1},
+        {"q": "Was macht Jonas, als er die Frage nicht versteht?", "o": ["Er antwortet einfach mit Ja", "Er fragt auf Englisch", "Er bittet sie, es langsamer zu wiederholen"], "a": 2},
+        {"q": "Was wollen Jonas und seine Familie?", "o": ["In Frankreich leben", "Ein Jahr Urlaub machen", "Ein Haus kaufen und vermieten"], "a": 0},
+        {"q": "Was bietet Madame Roussel an?", "o": ["Einen Kaffee", "Hilfe, wenn sie was brauchen", "Ihr Auto"], "a": 1}
+      ],
+      "erklaerung": {
+        "titel": "„on“ heißt meistens „wir“",
+        "text": "Im Alltag sagt in Frankreich kaum jemand „nous“ für „wir“. Man sagt „on“. Das Verb klingt dann wie bei „er“ oder „sie“: on vient, on veut, on habite. Fragen ohne Fragewort gehen einfach über die Stimme: Am Ende geht sie hoch.",
+        "beispiele": [
+          {"fr": "On vient d'arriver.", "de": "Wir sind gerade angekommen."},
+          {"fr": "On veut rester.", "de": "Wir wollen bleiben."},
+          {"fr": "Vous êtes d'où ?", "de": "Woher kommen Sie? (Stimme hoch am Ende)"}
+        ]
+      },
+      "aussprache": {
+        "titel": "Alles fließt zusammen",
+        "text": "Auf Deutsch setzt man vor jedes Wort mit Vokal einen kleinen Stopp: „ein | Apfel“. Im Französischen nicht. Da läuft der Satz in einem Fluss, und betont wird nur die letzte Silbe der Gruppe.",
+        "beispiele": [
+          {"fr": "Vous êtes d'où ?", "tipp": "„vu-zät-du“, ohne Stopp vor „êtes“"},
+          {"fr": "On vient d'arriver.", "tipp": "Betont wird nur das Ende: „da-ri-VÉ“"},
+          {"fr": "Je m'appelle …", "tipp": "„schma-päl“, das e von „je“ fällt fast weg"}
+        ]
+      },
+      "nachsprechen": [1, 3, 5, 7, 9, 11, 13, 15],
+      "rollenspiel": [
+        {"s": "A", "fr": "Bonjour ! Vous êtes les nouveaux voisins ?", "hinweis": "Sag Hallo und dass ihr gerade angekommen seid.", "muster": "Bonjour ! Oui, on vient d'arriver."},
+        {"s": "A", "fr": "Bienvenue ! Moi, c'est Madame Roussel. Et vous ?", "hinweis": "Sag „freut mich“ und deinen Namen.", "muster": {"m": "Enchanté. Je m'appelle …", "f": "Enchantée. Je m'appelle …"}, "frei": true},
+        {"s": "A", "fr": "Vous êtes d'où ?", "hinweis": "Sag, dass du Deutsche oder Deutscher bist.", "muster": {"m": "Je suis allemand.", "f": "Je suis allemande."}},
+        {"s": "A", "fr": "Et vous êtes là pour longtemps ?", "hinweis": "Du hast es nicht verstanden. Bitte sie, es langsamer zu wiederholen.", "muster": "Pardon, vous pouvez répéter plus lentement ?"},
+        {"s": "A", "fr": "Vous parlez déjà bien français !", "hinweis": "Sag, dass du ein bisschen sprichst und noch lernst.", "muster": "Merci, je parle un peu. J'apprends."},
+        {"s": "A", "fr": "Si vous avez besoin de quelque chose, n'hésitez pas.", "hinweis": "Bedank dich, das ist nett. Wünsch einen schönen Tag.", "muster": "Merci, c'est gentil. Bonne journée !"}
+      ],
+      "karten": [
+        {"fr": "On vient d'arriver.", "de": "Wir sind gerade angekommen."},
+        {"fr": "Je m'appelle …", "de": "Ich heiße …"},
+        {"fr": "On vient d'Allemagne.", "de": "Wir kommen aus Deutschland."},
+        {"fr": {"m": "Je suis allemand.", "f": "Je suis allemande."}, "de": {"m": "Ich bin Deutscher.", "f": "Ich bin Deutsche."}},
+        {"fr": "Pardon, je ne comprends pas.", "de": "Entschuldigung, ich verstehe nicht."},
+        {"fr": "Vous pouvez répéter plus lentement ?", "de": "Können Sie das langsamer wiederholen?"},
+        {"fr": "On veut vivre en France.", "de": "Wir wollen in Frankreich leben."},
+        {"fr": "Je parle un peu. J'apprends.", "de": "Ich spreche ein bisschen. Ich lerne noch."},
+        {"fr": "Merci, c'est gentil.", "de": "Danke, das ist nett."},
+        {"fr": "Vous êtes d'où ?", "de": "Woher kommen Sie?", "dir": "fr", "v": "roussel"},
+        {"fr": "Si vous avez besoin de quelque chose, n'hésitez pas.", "de": "Wenn Sie etwas brauchen, sagen Sie Bescheid.", "dir": "fr", "v": "roussel"}
+      ]
+    },
+    {
+      "id": "e2",
+      "nr": 2,
+      "titel": "Bäckerei",
+      "fr": "À la boulangerie",
+      "niveau": "A1",
+      "motiv": "brot",
+      "ziel": "Du kannst Brot und Croissants bestellen, nach Sauerteigbrot fragen, den Preis verstehen und bezahlen.",
+      "szene": "Samstagmorgen, die Bäckerei an der Ecke. Es riecht nach frischem Brot.",
+      "sprecher": {"A": "boulanger", "B": "anna"},
+      "dialog": [
+        {"s": "A", "fr": "Bonjour madame !", "de": "Guten Morgen!"},
+        {"s": "B", "fr": "Bonjour ! Je voudrais une baguette tradition, s'il vous plaît.", "de": "Guten Morgen! Ich hätte gern eine Baguette tradition, bitte."},
+        {"s": "A", "fr": "Une tradition, oui. Et avec ceci ?", "de": "Eine tradition, ja. Darf's noch was sein?"},
+        {"s": "B", "fr": "Vous avez du pain au levain ?", "de": "Haben Sie Sauerteigbrot?"},
+        {"s": "A", "fr": "Oui, on a une grosse miche au levain. Vous voulez une moitié ?", "de": "Ja, wir haben einen großen Laib Sauerteigbrot. Möchten Sie eine Hälfte?"},
+        {"s": "B", "fr": "Oui, une moitié, c'est parfait.", "de": "Ja, eine Hälfte, das passt perfekt."},
+        {"s": "A", "fr": "Et avec ça ?", "de": "Und sonst noch was?"},
+        {"s": "B", "fr": "Deux croissants, s'il vous plaît. Ils sont pur beurre ?", "de": "Zwei Croissants, bitte. Sind die nur mit Butter gemacht?"},
+        {"s": "A", "fr": "Oui, pur beurre. On les fait ici, tous les matins.", "de": "Ja, nur mit Butter. Wir backen sie hier, jeden Morgen."},
+        {"s": "B", "fr": "Super. Alors, deux croissants.", "de": "Super. Dann zwei Croissants."},
+        {"s": "A", "fr": "Ce sera tout ?", "de": "Ist das alles?"},
+        {"s": "B", "fr": "Oui, c'est tout. Ça fait combien ?", "de": "Ja, das ist alles. Was macht das?"},
+        {"s": "A", "fr": "Alors… ça vous fait six euros quarante.", "de": "Also … das macht sechs Euro vierzig."},
+        {"s": "B", "fr": "Je peux payer par carte ?", "de": "Kann ich mit Karte zahlen?"},
+        {"s": "A", "fr": "Bien sûr, allez-y. Merci, bonne journée !", "de": "Klar, bitte. Danke, schönen Tag noch!"},
+        {"s": "B", "fr": "Merci, à vous aussi. Au revoir !", "de": "Danke, Ihnen auch. Auf Wiedersehen!"}
+      ],
+      "fragen": [
+        {"q": "Was bestellt Anna zuerst?", "o": ["Zwei Croissants", "Eine Baguette tradition", "Ein Vollkornbrot"], "a": 1},
+        {"q": "Wonach fragt sie dann?", "o": ["Nach Sauerteigbrot", "Nach Kuchen", "Nach den Öffnungszeiten"], "a": 0},
+        {"q": "Wie viel nimmt sie vom Sauerteigbrot?", "o": ["Den ganzen Laib", "Zwei Scheiben", "Die Hälfte"], "a": 2},
+        {"q": "Was heißt „pur beurre“ bei Croissants?", "o": ["Nur mit Butter gebacken, ohne Margarine", "Ohne Butter", "Mit Butter zum Bestreichen dabei"], "a": 0},
+        {"q": "Wie viel zahlt sie?", "o": ["4,60 €", "6,40 €", "16,40 €"], "a": 1},
+        {"q": "Wie zahlt sie?", "o": ["Bar", "Mit Karte", "Sie lässt anschreiben"], "a": 1}
+      ],
+      "erklaerung": {
+        "titel": "„Je voudrais“ und „du“",
+        "text": "„Je voudrais“ heißt „ich hätte gern“. Damit bestellst du überall höflich. „Je veux“ (ich will) klingt an der Theke zu hart. Und wenn du nach etwas fragst, das man nicht zählt, kommt „du“ davor: du pain, du beurre. Auf Deutsch lässt man den Artikel einfach weg („Haben Sie Brot?“), auf Französisch nie.",
+        "beispiele": [
+          {"fr": "Je voudrais une baguette.", "de": "Ich hätte gern eine Baguette."},
+          {"fr": "Je voudrais deux croissants.", "de": "Ich hätte gern zwei Croissants."},
+          {"fr": "Vous avez du pain au levain ?", "de": "Haben Sie Sauerteigbrot?"}
+        ]
+      },
+      "aussprache": {
+        "titel": "Durch die Nase",
+        "text": "Die Nasale gibt es im Deutschen nicht. Der Vokal geht durch die Nase, und das n am Ende spricht man nicht mit. Also nicht „Päng“, sondern ein langes, nasales „ä“. In der Bäckerei hast du alle drei: on (bonjour), an (croissant) und in (pain).",
+        "beispiele": [
+          {"fr": "Bonjour", "tipp": "„on“: Mund rund wie bei o, Luft durch die Nase"},
+          {"fr": "Deux croissants", "tipp": "„an“: Mund offen wie bei a, kein n und kein g am Ende"},
+          {"fr": "Du pain au levain", "tipp": "„in“: wie ein nasales ä"},
+          {"fr": "Six euros quarante", "tipp": "Hier bindet man: „si-zö-ro“"}
+        ]
+      },
+      "extra": {
+        "titel": "Zahlen bis 20",
+        "text": "Preise hörst du ständig. Tipp drauf zum Anhören.",
+        "liste": [
+          {"fr": "un", "de": "1"}, {"fr": "deux", "de": "2"}, {"fr": "trois", "de": "3"}, {"fr": "quatre", "de": "4"}, {"fr": "cinq", "de": "5"},
+          {"fr": "six", "de": "6"}, {"fr": "sept", "de": "7"}, {"fr": "huit", "de": "8"}, {"fr": "neuf", "de": "9"}, {"fr": "dix", "de": "10"},
+          {"fr": "onze", "de": "11"}, {"fr": "douze", "de": "12"}, {"fr": "treize", "de": "13"}, {"fr": "quatorze", "de": "14"}, {"fr": "quinze", "de": "15"},
+          {"fr": "seize", "de": "16"}, {"fr": "dix-sept", "de": "17"}, {"fr": "dix-huit", "de": "18"}, {"fr": "dix-neuf", "de": "19"}, {"fr": "vingt", "de": "20"}
+        ],
+        "v": "anna"
+      },
+      "nachsprechen": [1, 3, 5, 7, 9, 11, 13, 15],
+      "rollenspiel": [
+        {"s": "A", "fr": "Bonjour ! Qu'est-ce que je vous sers ?", "hinweis": "Grüß und bestell eine Baguette tradition.", "muster": "Bonjour ! Je voudrais une baguette tradition, s'il vous plaît."},
+        {"s": "A", "fr": "Une tradition. Et avec ceci ?", "hinweis": "Frag, ob es Sauerteigbrot gibt.", "muster": "Vous avez du pain au levain ?"},
+        {"s": "A", "fr": "Oui, une grosse miche. Vous voulez une moitié ?", "hinweis": "Sag ja, die Hälfte passt perfekt.", "muster": "Oui, une moitié, c'est parfait."},
+        {"s": "A", "fr": "Et avec ça ?", "hinweis": "Bestell zwei Croissants.", "muster": "Deux croissants, s'il vous plaît."},
+        {"s": "A", "fr": "Ce sera tout ?", "hinweis": "Sag, dass das alles ist, und frag nach dem Preis.", "muster": "Oui, c'est tout. Ça fait combien ?"},
+        {"s": "A", "fr": "Six euros quarante.", "hinweis": "Frag, ob du mit Karte zahlen kannst.", "muster": "Je peux payer par carte ?"},
+        {"s": "A", "fr": "Bien sûr. Bonne journée !", "hinweis": "Bedank dich und wünsch ihm auch einen schönen Tag.", "muster": "Merci, à vous aussi. Au revoir !"}
+      ],
+      "karten": [
+        {"fr": "Je voudrais une baguette tradition, s'il vous plaît.", "de": "Ich hätte gern eine Baguette tradition, bitte."},
+        {"fr": "Vous avez du pain au levain ?", "de": "Haben Sie Sauerteigbrot?"},
+        {"fr": "Une moitié, c'est parfait.", "de": "Eine Hälfte, das passt perfekt."},
+        {"fr": "Deux croissants, s'il vous plaît.", "de": "Zwei Croissants, bitte."},
+        {"fr": "Ils sont pur beurre ?", "de": "Sind die nur mit Butter gemacht?"},
+        {"fr": "C'est tout. Ça fait combien ?", "de": "Das ist alles. Was macht das?"},
+        {"fr": "Je peux payer par carte ?", "de": "Kann ich mit Karte zahlen?"},
+        {"fr": "Merci, à vous aussi.", "de": "Danke, Ihnen auch."},
+        {"fr": "Et avec ceci ?", "de": "Darf's noch was sein?", "dir": "fr", "v": "boulanger"},
+        {"fr": "Ce sera tout ?", "de": "Ist das alles?", "dir": "fr", "v": "boulanger"},
+        {"fr": "Ça vous fait six euros quarante.", "de": "Das macht sechs Euro vierzig.", "dir": "fr", "v": "boulanger"}
+      ]
+    },
+    {
+      "id": "e3",
+      "nr": 3,
+      "titel": "Markt und Käse",
+      "fr": "Au marché, chez la fromagère",
+      "niveau": "A1",
+      "motiv": "kaese",
+      "ziel": "Du kannst am Käsestand nach Rohmilchkäse fragen, probieren, die Menge sagen und Rohmilchbutter kaufen.",
+      "szene": "Wochenmarkt am Samstag. Am Käsestand liegen ganze Laibe Comté, daneben kleine Ziegenkäse.",
+      "sprecher": {"A": "fromagere", "B": "jonas"},
+      "dialog": [
+        {"s": "A", "fr": "Bonjour monsieur, je vous écoute.", "de": "Guten Tag, was darf's sein?"},
+        {"s": "B", "fr": "Bonjour ! Je cherche un fromage au lait cru.", "de": "Guten Tag! Ich suche einen Käse aus Rohmilch."},
+        {"s": "A", "fr": "Ici, presque tout est au lait cru. Vous aimez plutôt doux ou plutôt fort ?", "de": "Hier ist fast alles aus Rohmilch. Mögen Sie es eher mild oder eher kräftig?"},
+        {"s": "B", "fr": "Plutôt fort. Je peux goûter ?", "de": "Eher kräftig. Kann ich probieren?"},
+        {"s": "A", "fr": "Bien sûr, tenez. C'est un comté de vingt-quatre mois.", "de": "Klar, bitte. Das ist ein Comté, 24 Monate gereift."},
+        {"s": "B", "fr": "Mmh, il est très bon ! Il vient d'où ?", "de": "Mmh, der ist sehr gut! Woher kommt er?"},
+        {"s": "A", "fr": "Du Jura. Lait de vache, lait cru, bien sûr.", "de": "Aus dem Jura. Kuhmilch, Rohmilch natürlich."},
+        {"s": "B", "fr": "Je vais en prendre un morceau.", "de": "Ich nehme ein Stück davon."},
+        {"s": "A", "fr": "Un morceau comme ça ?", "de": "Ein Stück so groß?"},
+        {"s": "B", "fr": "Un peu moins, s'il vous plaît.", "de": "Ein bisschen weniger, bitte."},
+        {"s": "A", "fr": "Comme ça ? Ça fait à peu près deux cents grammes.", "de": "So? Das sind ungefähr zweihundert Gramm."},
+        {"s": "B", "fr": "Parfait. Et vous avez du chèvre ?", "de": "Perfekt. Und haben Sie Ziegenkäse?"},
+        {"s": "A", "fr": "Oui, des crottins. Ils sont bien frais.", "de": "Ja, kleine Crottins. Die sind schön frisch."},
+        {"s": "B", "fr": "J'en prends deux.", "de": "Ich nehme zwei davon."},
+        {"s": "A", "fr": "Et avec ça ?", "de": "Und sonst noch was?"},
+        {"s": "B", "fr": "Vous avez aussi du beurre au lait cru ?", "de": "Haben Sie auch Rohmilchbutter?"},
+        {"s": "A", "fr": "Oui. Demi-sel ou doux ?", "de": "Ja. Gesalzen oder ungesalzen?"},
+        {"s": "B", "fr": "Demi-sel, s'il vous plaît. Et c'est tout. Je vous dois combien ?", "de": "Gesalzen, bitte. Und das ist alles. Was bin ich Ihnen schuldig?"},
+        {"s": "A", "fr": "Alors… ça fait quatorze euros cinquante.", "de": "Also … das macht vierzehn Euro fünfzig."},
+        {"s": "B", "fr": "Voilà. Merci beaucoup !", "de": "Bitte schön. Vielen Dank!"},
+        {"s": "A", "fr": "Merci à vous. Bon week-end !", "de": "Ich danke Ihnen. Schönes Wochenende!"}
+      ],
+      "fragen": [
+        {"q": "Was sucht Jonas?", "o": ["Käse aus Rohmilch", "Bio-Käse", "Käse ohne Laktose"], "a": 0},
+        {"q": "Wie mag er seinen Käse?", "o": ["Eher mild", "Eher kräftig", "Ganz frisch"], "a": 1},
+        {"q": "Wie lange ist der Comté gereift?", "o": ["4 Monate", "14 Monate", "24 Monate"], "a": 2},
+        {"q": "Woher kommt der Comté?", "o": ["Aus dem Jura", "Aus der Normandie", "Aus den Pyrenäen"], "a": 0},
+        {"q": "Wie viele Ziegenkäse nimmt er?", "o": ["Einen", "Zwei", "Vier"], "a": 1},
+        {"q": "Welche Butter kauft er?", "o": ["Ungesalzene", "Gesalzene", "Gar keine"], "a": 1}
+      ],
+      "erklaerung": {
+        "titel": "„du, de la, des“ und „en“",
+        "text": "Beim Einkaufen fragst du ständig nach „etwas von“ einer Sache. Dafür gibt es du (männlich), de la (weiblich) und des (mehrere): du fromage, de la crème, des crottins. Und „en“ heißt „davon“. Statt den Käse nochmal zu nennen, sagst du einfach: J'en prends deux. Ich nehme zwei davon.",
+        "beispiele": [
+          {"fr": "Vous avez du beurre au lait cru ?", "de": "Haben Sie Rohmilchbutter?"},
+          {"fr": "Je voudrais de la crème crue.", "de": "Ich hätte gern Rohmilchsahne."},
+          {"fr": "J'en prends deux.", "de": "Ich nehme zwei davon."}
+        ]
+      },
+      "aussprache": {
+        "titel": "Am Ende weich bleiben",
+        "text": "Deutsche machen am Wortende alles hart: aus „rouge“ wird „rusch“. Im Französischen bleibt der Laut weich und summend. Das j in „fromage“ klingt wie in „Garage“. Und achte auf u gegen ou: „cru“ (roh) ist ein spitzes ü, „cours“ ein dunkles u.",
+        "beispiele": [
+          {"fr": "Du fromage", "tipp": "Am Ende summend wie „Garage“, nicht „fromasch“"},
+          {"fr": "Du chèvre", "tipp": "Das v am Ende hört man leise mit"},
+          {"fr": "Au lait cru", "tipp": "„krü“, Lippen spitz wie beim deutschen ü"},
+          {"fr": "J'en prends deux.", "tipp": "„schã prã dö“, zwei Nasale hintereinander"}
+        ]
+      },
+      "nachsprechen": [1, 3, 5, 7, 9, 11, 13, 15, 17],
+      "rollenspiel": [
+        {"s": "A", "fr": "Bonjour, je vous écoute.", "hinweis": "Grüß und sag, dass du einen Käse aus Rohmilch suchst.", "muster": "Bonjour ! Je cherche un fromage au lait cru."},
+        {"s": "A", "fr": "Vous aimez plutôt doux ou plutôt fort ?", "hinweis": "Sag: eher kräftig. Und frag, ob du probieren kannst.", "muster": "Plutôt fort. Je peux goûter ?"},
+        {"s": "A", "fr": "Bien sûr, tenez. C'est un comté de vingt-quatre mois.", "hinweis": "Sag, dass er sehr gut ist, und frag, woher er kommt.", "muster": "Il est très bon ! Il vient d'où ?"},
+        {"s": "A", "fr": "Du Jura. Je vous en mets un morceau comme ça ?", "hinweis": "Ja, aber ein bisschen weniger.", "muster": "Oui, un peu moins, s'il vous plaît."},
+        {"s": "A", "fr": "Et avec ça ?", "hinweis": "Frag, ob sie Rohmilchbutter hat.", "muster": "Vous avez du beurre au lait cru ?"},
+        {"s": "A", "fr": "Oui. Demi-sel ou doux ?", "hinweis": "Die gesalzene, bitte.", "muster": "Demi-sel, s'il vous plaît."},
+        {"s": "A", "fr": "Ce sera tout ?", "hinweis": "Sag, dass das alles ist, und frag, was du schuldest.", "muster": "Oui, c'est tout. Je vous dois combien ?"}
+      ],
+      "karten": [
+        {"fr": "Je cherche un fromage au lait cru.", "de": "Ich suche einen Käse aus Rohmilch."},
+        {"fr": "Plutôt fort. Je peux goûter ?", "de": "Eher kräftig. Kann ich probieren?"},
+        {"fr": "Il vient d'où ?", "de": "Woher kommt er?"},
+        {"fr": "Un peu moins, s'il vous plaît.", "de": "Ein bisschen weniger, bitte."},
+        {"fr": "Vous avez du chèvre ?", "de": "Haben Sie Ziegenkäse?"},
+        {"fr": "J'en prends deux.", "de": "Ich nehme zwei davon."},
+        {"fr": "Vous avez du beurre au lait cru ?", "de": "Haben Sie Rohmilchbutter?"},
+        {"fr": "Demi-sel, s'il vous plaît.", "de": "Die gesalzene, bitte."},
+        {"fr": "Je vous dois combien ?", "de": "Was bin ich Ihnen schuldig?"},
+        {"fr": "Je vous écoute.", "de": "Was darf's sein? (wörtlich: Ich höre Ihnen zu.)", "dir": "fr", "v": "fromagere"},
+        {"fr": "Vous aimez plutôt doux ou plutôt fort ?", "de": "Mögen Sie es eher mild oder eher kräftig?", "dir": "fr", "v": "fromagere"}
+      ]
+    }
+  ]
+}
