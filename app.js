@@ -143,7 +143,7 @@ async function pull(){
 function setSync(s){ sync = s; $$(".sync").forEach(el => el.outerHTML = syncPill()); }
 function syncPill(){
   const m = {ok:["ok", "Synchron"], warte:["warn", "Speichert"], offline:["warn", "Offline"], fehler:["err", "Sync-Fehler"], lokal:["", user ? "Verbinde" : "Nur hier"]}[sync] || ["", ""];
-  return `<span class="sync" title="${user ? "Mit deinem Konto abgeglichen" : "Nur auf diesem Gerät gespeichert"}"><span class="dot ${m[0]}"></span>${m[1]}</span>`;
+  return `<span class="sync" title="${user ? "Mit deinem Konto abgeglichen" : "Nur auf diesem Gerät gespeichert"}"><span class="dot ${m[0]}"></span><span class="st">${m[1]}</span></span>`;
 }
 // Der Lernstand auf dem Gerät gehört zu einem Konto. Meldet sich jemand anderes an (z. B. die Mama auf seinem Handy),
 // fängt das Gerät mit einem leeren Stand an und holt ihren aus der Cloud. Ohne Konto Gelerntes übernimmt das erste Konto.
@@ -420,7 +420,7 @@ function homeView(){
   }).join("");
   return `<div class="page">
     <header class="top"><button class="chip" data-go="${zweiPersonen() ? "#/profil" : "#/einst"}" aria-label="${zweiPersonen() ? "Profil wechseln" : "Einstellungen"}"><span class="mono">${esc((M().name || "?")[0].toUpperCase())}</span>${esc(M().name)}</button>
-      <span style="display:flex;align-items:center;gap:4px">${syncPill()}<button class="iconbtn" data-go="#/einst" aria-label="Einstellungen">${I.zahnrad}</button></span></header>
+      <span style="display:flex;align-items:center;gap:10px">${syncPill()}<button class="einstbtn" data-go="#/einst">${I.zahnrad}<span>Einstellungen</span></button></span></header>
     <div class="mast ${first ? "first" : ""}">${siegel()}<div class="datum">${esc(datumText())}</div><h1>${titel}</h1><div class="doppel"></div>
       <div class="unter"><span>Euer Weg nach Frankreich</span><span>Aujourd'hui</span></div></div>
     <section class="heute ink" style="--i:1"><span class="label">Heute dran</span>
