@@ -1,6 +1,6 @@
 # En route · Französisch für zwei
 
-Lern-App für den Weg nach Frankreich: Hören, Verstehen, Nachsprechen, Selbst reden, Wiederholen. Zwei Profile mit eigenem Fortschritt, Anmeldung mit dem PARA-Cockpit-Konto (Supabase, Zeilen `__enroute`, `__enroute_p1`, `__enroute_p2` in der Tabelle `items`).
+Lern-App für den Weg nach Frankreich: Hören, Verstehen, Nachsprechen, Selbst reden, Wiederholen. Eigenes Konto per E-Mail (oder das PARA-Cockpit-Konto), auf Wunsch mit zweiter Person im selben Konto (Supabase, Zeilen `__enroute`, `__enroute_p1`, `__enroute_p2` in der Tabelle `items`).
 
 Live: https://danielgit8.github.io/en-route/
 

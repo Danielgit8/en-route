@@ -71,8 +71,9 @@ function siegel(cls = "siegel"){
 
 /* ---------- Zustand ---------- */
 const blankP = () => ({steps:{}, hoer:{}, cards:{}, days:{}, best:{}, updated:0});
-let ST = {v:1, meta:{p1:{name:"", g:"m"}, p2:{name:"", g:"f"}, updated:0}, p:{p1:blankP(), p2:blankP()}, active:null, rate:1, skipLogin:false};
+let ST = {v:1, meta:{p1:{name:"", g:"m"}, p2:{name:"", g:"f"}, updated:0}, p:{p1:blankP(), p2:blankP()}, active:null, rate:1, skipLogin:false, uid:null};
 try { const j = JSON.parse(localStorage.getItem(LKEY) || "null"); if (j && j.v) ST = {...ST, ...j, p:{p1:{...blankP(), ...(j.p?.p1 || {})}, p2:{...blankP(), ...(j.p?.p2 || {})}}}; } catch (e) {}
+const zweiPersonen = () => !!(ST.meta.p2 && ST.meta.p2.name);
 const P = () => ST.p[ST.active || "p1"];
 const M = () => ST.meta[ST.active || "p1"];
 const lv = () => M().g === "f" ? "lf" : "lm";          // Lernstimme passend zur Person
@@ -142,15 +143,27 @@ async function pull(){
 function setSync(s){ sync = s; $$(".sync").forEach(el => el.outerHTML = syncPill()); }
 function syncPill(){
   const m = {ok:["ok", "Synchron"], warte:["warn", "Speichert"], offline:["warn", "Offline"], fehler:["err", "Sync-Fehler"], lokal:["", user ? "Verbinde" : "Nur hier"]}[sync] || ["", ""];
-  return `<span class="sync" title="${user ? "Mit deinem Cockpit-Konto abgeglichen" : "Nur auf diesem Gerät gespeichert"}"><span class="dot ${m[0]}"></span>${m[1]}</span>`;
+  return `<span class="sync" title="${user ? "Mit deinem Konto abgeglichen" : "Nur auf diesem Gerät gespeichert"}"><span class="dot ${m[0]}"></span>${m[1]}</span>`;
+}
+// Der Lernstand auf dem Gerät gehört zu einem Konto. Meldet sich jemand anderes an (z. B. die Mama auf seinem Handy),
+// fängt das Gerät mit einem leeren Stand an und holt ihren aus der Cloud. Ohne Konto Gelerntes übernimmt das erste Konto.
+function kontoWechsel(u){
+  if (ST.uid && ST.uid !== u.id) {
+    ST = {...ST, meta:{p1:{name:"", g:"m"}, p2:{name:"", g:"f"}, updated:0}, p:{p1:blankP(), p2:blankP()}, active:null};
+    dirty.clear(); KARTEN.quelle = null;
+  }
+  ST.uid = u.id; ST.skipLogin = false; saveLocal();
 }
 async function initAuth(){
   if (!window.supabase) { authChecked = true; render(); return; }
-  sb = window.supabase.createClient(CONFIG.url, CONFIG.key, {auth:{persistSession:true, autoRefreshToken:true, detectSessionInUrl:false}});
+  // detectSessionInUrl: Der Bestätigungslink aus der Registrierungs-Mail meldet direkt hier an
+  sb = window.supabase.createClient(CONFIG.url, CONFIG.key, {auth:{persistSession:true, autoRefreshToken:true, detectSessionInUrl:true}});
   try { const {data} = await sb.auth.getSession(); user = data.session ? data.session.user : null; } catch (e) {}
+  if (/access_token|error_description|type=signup/.test(location.hash)) history.replaceState(null, "", location.pathname + "#/");
+  if (user) kontoWechsel(user);
   authChecked = true; render();
   if (user) pull();
-  sb.auth.onAuthStateChange((ev, s) => { const was = user; user = s ? s.user : null; if (user && !was) { pull().then(render); } if (!user && was) render(); });
+  sb.auth.onAuthStateChange((ev, s) => { const was = user; user = s ? s.user : null; if (user && !was) { kontoWechsel(user); render(); pull().then(render); } if (!user && was) render(); });
 }
 document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") pull(); else if (pushT) push(); });
 window.addEventListener("online", () => pull());
@@ -323,6 +336,19 @@ function stempel(wort = "Bravo"){
   if (navigator.vibrate) navigator.vibrate(18);
 }
 
+/* ---------- Als App installieren ---------- */
+let installEvt = null;
+const istApp = () => matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
+addEventListener("beforeinstallprompt", e => { e.preventDefault(); installEvt = e; if (C && ["", "einst"].includes(route()[0] || "")) zeichneNeu(); });
+addEventListener("appinstalled", () => { installEvt = null; toast("En route ist jetzt auf deinem Startbildschirm"); });
+function installBlock(){
+  if (istApp()) return "";
+  return `<section class="blatt"><span class="label">Aufs Handy</span><h2>Als App installieren</h2>
+    ${installEvt ? `<p class="szene">Dann startet En route wie eine echte App vom Startbildschirm.</p><button class="btn klein" data-act="installieren" style="margin-top:8px">Jetzt installieren</button>`
+    : `<p class="szene">In Chrome oben rechts auf die drei Punkte tippen, dann „App installieren“ oder „Zum Startbildschirm hinzufügen“.</p>
+      <p class="szene">Passiert danach nichts (bei Xiaomi häufig): In den Handy-Einstellungen unter Apps, Chrome, Berechtigungen „Verknüpfungen auf dem Startbildschirm“ erlauben und es nochmal probieren.</p>`}</section>`;
+}
+
 /* ---------- Ansichten ---------- */
 const route = () => location.hash.replace(/^#\/?/, "").split("/").filter(Boolean);
 function topbar(backHref, backText = "Zurück"){
@@ -332,26 +358,35 @@ function datumText(){
   return new Date().toLocaleDateString("de-DE", {weekday:"long", day:"numeric", month:"long"});
 }
 
+const LOGIN = {modus:"login", msg:"", ok:false};
 function loginView(){
+  const neu = LOGIN.modus === "neu";
   return `<div class="page"><div class="mast"><div class="datum">Französisch für zwei</div><h1>En <em>route</em></h1><div class="doppel"></div>
     <div class="unter"><span>Euer Weg nach Frankreich</span><span>${nr2(1)}</span></div></div>
-    <section class="blatt ink" style="--i:2;margin-top:28px"><span class="label">Anmelden</span><h2>Mit deinem Cockpit-Konto</h2>
-    <p class="szene">Gleiche E-Mail und gleiches Passwort wie im PARA Cockpit. Dann lernt ihr auf jedem Handy weiter, wo ihr aufgehört habt.</p>
-    <form id="login"><div class="fld"><label for="l-mail">E-Mail</label><input type="email" id="l-mail" autocomplete="username" required></div>
-    <div class="fld"><label for="l-pw">Passwort</label><input type="password" id="l-pw" autocomplete="current-password" required></div>
-    <p class="fehltext" id="l-msg"></p><button class="btn block" type="submit">Anmelden</button></form>
-    <button class="linkbtn" data-act="skip-login" style="margin-top:12px">Erst mal ohne Anmeldung, nur auf diesem Gerät</button></section></div>`;
+    <div class="runden" role="tablist" style="margin-top:22px"><button role="tab" data-login="login" class="${neu ? "" : "an"}">Anmelden</button><button role="tab" data-login="neu" class="${neu ? "an" : ""}">Neues Konto</button><span class="linie"></span></div>
+    <section class="blatt ink" style="--i:1">${neu
+      ? `<span class="label">Eigenes Konto</span><h2>Konto anlegen</h2>
+        <p class="szene">Mit deiner eigenen E-Mail. Dann hast du deinen eigenen Lernstand, auf jedem Handy.</p>`
+      : `<span class="label">Anmelden</span><h2>Mit deinem Konto</h2>
+        <p class="szene">Hast du schon ein Konto für das PARA Cockpit, nimm die gleiche E-Mail und das gleiche Passwort.</p>`}
+    <form id="login"><div class="fld"><label for="l-mail">E-Mail</label><input type="email" id="l-mail" autocomplete="${neu ? "email" : "username"}" required></div>
+    <div class="fld"><label for="l-pw">Passwort${neu ? " (mindestens 8 Zeichen)" : ""}</label><input type="password" id="l-pw" autocomplete="${neu ? "new-password" : "current-password"}" ${neu ? 'minlength="8"' : ""} required></div>
+    <p class="fehltext" id="l-msg" style="${LOGIN.ok ? "color:var(--olive)" : ""}">${esc(LOGIN.msg)}</p><button class="btn block" type="submit" id="l-btn">${neu ? "Konto anlegen" : "Anmelden"}</button></form>
+    <button class="linkbtn" data-act="skip-login" style="margin-top:12px">Erst mal ohne Konto, nur auf diesem Gerät</button></section></div>`;
 }
 
 function setupView(){
   const m = ST.meta;
-  const seg = (w, g) => `<div class="seg" role="group" aria-label="Anrede"><button type="button" data-g="${w}:m" class="${m[w].g === "m" ? "an" : ""}">er</button><button type="button" data-g="${w}:f" class="${m[w].g === "f" ? "an" : ""}">sie</button></div>`;
+  const seg = w => `<div class="seg" role="group" aria-label="Anrede"><button type="button" data-g="${w}:m" class="${m[w].g === "m" ? "an" : ""}">er</button><button type="button" data-g="${w}:f" class="${m[w].g === "f" ? "an" : ""}">sie</button></div>`;
   return `<div class="page">${ST.active ? topbar("#/einst", "Einstellungen") : `<header class="top"><span></span>${syncPill()}</header>`}
-    <div class="skopf"><span class="label">Zwei Profile · gleiche Etappen</span><h1>Wer lernt <em>mit?</em></h1>
-    <p>Jede Person hat ihren eigenen Fortschritt. Die Anrede braucht die App für Sätze wie „Je suis allemand“ oder „allemande“ und für die passende Stimme beim Üben.</p></div>
-    <form id="setup">${["p1", "p2"].map((w, i) => `<section class="blatt ink" style="--i:${i + 1}"><span class="label">${nr2(i + 1)}</span>
-      <div class="fld"><label for="n-${w}">Name</label><input type="text" id="n-${w}" value="${esc(m[w].name)}" placeholder="${i ? "Zweite Person" : "Erste Person"}" autocomplete="off" required></div>
-      ${seg(w)}</section>`).join("")}
+    <div class="skopf"><span class="label">Wer lernt hier?</span><h1>Wie heißt <em>du?</em></h1>
+    <p>Die Anrede braucht die App für Sätze wie „Je suis allemand“ oder „allemande“ und für die passende Stimme beim Üben.</p></div>
+    <form id="setup"><section class="blatt ink" style="--i:1"><span class="label">${nr2(1)} · Du</span>
+      <div class="fld"><label for="n-p1">Name</label><input type="text" id="n-p1" value="${esc(m.p1.name)}" placeholder="Dein Vorname" autocomplete="given-name" required></div>
+      ${seg("p1")}</section>
+    <section class="blatt ink" style="--i:2"><span class="label">${nr2(2)} · Freiwillig</span>
+      <div class="fld"><label for="n-p2">Zweite Person auf diesem Konto</label><input type="text" id="n-p2" value="${esc(m.p2.name)}" placeholder="Leer lassen, wenn nur du hier lernst" autocomplete="off"></div>
+      ${seg("p2")}<p class="szene" style="margin-top:12px">Ihr könnt auch zwei getrennte Konten haben, jede Person mit eigener E-Mail. Dann bleibt das hier leer.</p></section>
     <div class="leiste"><button class="btn block" type="submit">Speichern</button></div></form></div>`;
 }
 
@@ -384,7 +419,7 @@ function homeView(){
       <div class="meta">${e.niveau} · ${done ? "geschafft" : `${anz} von 5 Schritten`}</div>${!done && anz ? `<div class="balken"><i style="width:${anz * 20}%"></i></div>` : ""}</a></li>`;
   }).join("");
   return `<div class="page">
-    <header class="top"><button class="chip" data-go="#/profil" aria-label="Profil wechseln"><span class="mono">${esc((M().name || "?")[0].toUpperCase())}</span>${esc(M().name)}</button>
+    <header class="top"><button class="chip" data-go="${zweiPersonen() ? "#/profil" : "#/einst"}" aria-label="${zweiPersonen() ? "Profil wechseln" : "Einstellungen"}"><span class="mono">${esc((M().name || "?")[0].toUpperCase())}</span>${esc(M().name)}</button>
       <span style="display:flex;align-items:center;gap:4px">${syncPill()}<button class="iconbtn" data-go="#/einst" aria-label="Einstellungen">${I.zahnrad}</button></span></header>
     <div class="mast ${first ? "first" : ""}">${siegel()}<div class="datum">${esc(datumText())}</div><h1>${titel}</h1><div class="doppel"></div>
       <div class="unter"><span>Euer Weg nach Frankreich</span><span>Aujourd'hui</span></div></div>
@@ -399,6 +434,7 @@ function homeView(){
     <div class="rubrik"><span class="label">Euer Weg nach Frankreich</span><span class="label">14 Etappen</span></div>
     <ol class="weg">${stationen}</ol>
     <p class="ehrlich">Ehrlich gesagt: Die App bringt euch bis zum ersten Gespräch. Danach braucht ihr echte Gespräche mit Franzosen, am Anfang über ein Tandem, später in Frankreich. Dafür gibt es Etappe 14.</p>
+    ${!istApp() ? `<p class="foot">${installEvt ? `<button class="btn ghost klein" data-act="installieren">Als App installieren</button>` : `<button class="linkbtn" data-go="#/einst">Als App aufs Handy</button>`}</p>` : ""}
     <p class="foot">${faellig().length ? `<button class="linkbtn" data-go="#/wdh">Nur wiederholen</button> · ` : ""}Lernreihenfolge nach GER, Nation, Krashen und Pimsleur</p>
   </div>`;
 }
@@ -593,18 +629,19 @@ function wdhView(){
 function einstView(){
   const t = document.documentElement.dataset.theme || "auto";
   return `<div class="page">${topbar("#/", "Übersicht")}<div class="skopf"><span class="label">Einstellungen</span><h1>Réglages</h1></div>
-    <section class="blatt"><span class="label">Profile</span><h2>${esc(ST.meta.p1.name)} und ${esc(ST.meta.p2.name)}</h2>
-      <p class="szene">Gerade lernt hier: <b>${esc(M().name)}</b>.</p>
-      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px"><button class="btn klein" data-go="#/profil">Profil wechseln</button><button class="btn ghost klein" data-go="#/setup">Namen ändern</button></div></section>
+    <section class="blatt"><span class="label">Profile</span><h2>${zweiPersonen() ? `${esc(ST.meta.p1.name)} und ${esc(ST.meta.p2.name)}` : esc(ST.meta.p1.name)}</h2>
+      <p class="szene">${zweiPersonen() ? `Gerade lernt hier: <b>${esc(M().name)}</b>.` : "Auf diesem Konto lernt eine Person. Wer mitlernen will, legt am besten ein eigenes Konto an."}</p>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px">${zweiPersonen() ? `<button class="btn klein" data-go="#/profil">Profil wechseln</button>` : ""}<button class="btn ghost klein" data-go="#/setup">${zweiPersonen() ? "Namen ändern" : "Name ändern oder Person dazu"}</button></div></section>
+    ${installBlock()}
     <section class="blatt"><span class="label">Aussehen</span><h2>Hell oder Keller</h2>
       <div class="seg" style="margin-top:6px">${[["auto", "Wie das Handy"], ["light", "Hell"], ["dark", "Dunkel"]].map(([k, l]) => `<button data-theme-set="${k}" class="${t === k ? "an" : ""}">${l}</button>`).join("")}</div></section>
     <section class="blatt"><span class="label">Tempo</span><h2>Wie schnell sprechen die Stimmen?</h2>
       <div class="seg" style="margin-top:6px"><button data-rate="1" class="${ST.rate === 1 ? "an" : ""}">Normal</button><button data-rate="0.8" class="${ST.rate < 1 ? "an" : ""}">Langsam</button></div></section>
     <section class="blatt"><span class="label">Konto</span><h2>${user ? "Angemeldet" : "Nur auf diesem Gerät"}</h2>
-      <p class="szene">${user ? `Mit ${esc(user.email)}. Der Fortschritt wird mit dem Cockpit-Konto abgeglichen.` : "Ohne Anmeldung bleibt alles auf diesem Handy."}</p>
-      ${user ? `<button class="btn ghost klein" data-act="logout" style="margin-top:8px">Abmelden</button>` : `<button class="btn klein" data-act="login-zeigen" style="margin-top:8px">Anmelden</button>`}</section>
+      <p class="szene">${user ? `Mit ${esc(user.email)}. Der Lernstand wird mit diesem Konto abgeglichen, auf jedem Handy.` : "Ohne Anmeldung bleibt alles auf diesem Handy."}</p>
+      ${user ? `<button class="btn ghost klein" data-act="logout" style="margin-top:8px">Abmelden</button>` : `<button class="btn klein" data-act="login-zeigen" style="margin-top:8px">Anmelden oder Konto anlegen</button>`}</section>
     <section class="blatt"><span class="label">Neu anfangen</span><h2>Fortschritt von ${esc(M().name)} löschen</h2>
-      <p class="szene">Setzt Etappen und Karten für dieses Profil zurück. Das andere Profil bleibt.</p>
+      <p class="szene">Setzt Etappen und Karten für dieses Profil zurück.${zweiPersonen() ? " Das andere Profil bleibt." : ""}</p>
       <button class="btn ghost klein" data-act="reset" style="margin-top:8px">Zurücksetzen</button></section>
     <p class="foot">En route · Inhalte nach dem Leitfaden im Projektordner · Stimmen: ElevenLabs</p></div>`;
 }
@@ -637,10 +674,11 @@ function render(){
     letzteRoute = key;
   }
   const login = !!(sb && authChecked && !user && !ST.skipLogin && !ST.meta.p1.name);
+  if (!zweiPersonen() && ST.meta.p1.name && ST.active !== "p1") { ST.active = "p1"; saveLocal(); }
   let html;
   if (login || r[0] === "login") html = loginView();
-  else if (!ST.meta.p1.name || !ST.meta.p2.name || r[0] === "setup") html = setupView();
-  else if (!ST.active || r[0] === "profil") html = profilView();
+  else if (!ST.meta.p1.name || r[0] === "setup") html = setupView();
+  else if (zweiPersonen() && (!ST.active || r[0] === "profil")) html = profilView();
   else if (r[0] === "einst") html = einstView();
   else if (r[0] === "wdh") html = wdhView();
   else if (r[0] === "e" && etappe(r[1])) {
@@ -681,12 +719,23 @@ document.addEventListener("click", async e => {
     VER.gewaehlt = k; if (k === q.a) VER.richtig++;
     stopAudio(); zeichneNeu(); return;
   }
+  const lg = e.target.closest("[data-login]");
+  if (lg) { LOGIN.modus = lg.dataset.login; LOGIN.msg = ""; LOGIN.ok = false; return zeichneNeu(); }
   const b = e.target.closest("[data-act]"); if (!b) return;
   const act = b.dataset.act, er = route()[0] === "e" ? etappe(route()[1]) : null;
   switch (act) {
     case "skip-login": ST.skipLogin = true; saveLocal(); location.hash = "#/"; return render();
     case "login-zeigen": location.hash = "#/login"; return;
-    case "logout": if (sb) await sb.auth.signOut(); user = null; ST.skipLogin = true; saveLocal(); setSync("lokal"); return zeichneNeu();
+    case "installieren": if (installEvt) { installEvt.prompt(); const c = await installEvt.userChoice.catch(() => null); if (c && c.outcome === "accepted") { installEvt = null; toast("Wird installiert"); } zeichneNeu(); } return;
+    case "logout": {
+      // Erst alles hochladen, dann das Gerät leeren: Der Lernstand liegt im Konto, das nächste Konto fängt sauber an
+      if (dirty.size) await push();
+      if (dirty.size && !confirm("Noch nicht alles ist gespeichert (kein Internet?). Trotzdem abmelden? Dann geht das Ungespeicherte verloren.")) return;
+      if (sb) await sb.auth.signOut();
+      user = null; dirty.clear();
+      ST = {...ST, meta:{p1:{name:"", g:"m"}, p2:{name:"", g:"f"}, updated:0}, p:{p1:blankP(), p2:blankP()}, active:null, uid:null, skipLogin:false};
+      saveLocal(); setSync("lokal"); location.hash = "#/"; return render();
+    }
     case "reset": if (!confirm(`Fortschritt von ${M().name} wirklich löschen? Das lässt sich nicht rückgängig machen.`)) return; ST.p[ST.active] = blankP(); save(); toast("Zurückgesetzt"); location.hash = "#/"; return;
     case "tempo": ST.rate = ST.rate < 1 ? 1 : 0.8; saveLocal(); b.classList.toggle("an", ST.rate < 1); b.textContent = ST.rate < 1 ? "Langsam" : "Normal"; return;
     case "hoer-play":
@@ -758,14 +807,34 @@ document.addEventListener("click", async e => {
 document.addEventListener("submit", async e => {
   e.preventDefault();
   if (e.target.id === "login") {
-    const msg = $("#l-msg"); msg.textContent = "";
-    try { const {error} = await sb.auth.signInWithPassword({email:$("#l-mail").value.trim(), password:$("#l-pw").value}); if (error) throw error; location.hash = "#/"; }
-    catch (err) { msg.textContent = "Anmelden hat nicht geklappt. Stimmen E-Mail und Passwort?"; }
+    const email = $("#l-mail").value.trim(), pw = $("#l-pw").value, neu = LOGIN.modus === "neu", btn = $("#l-btn");
+    LOGIN.ok = false; LOGIN.msg = "";
+    if (neu && pw.length < 8) { $("#l-msg").textContent = "Bitte mindestens 8 Zeichen für das Passwort."; return; }
+    btn.disabled = true;
+    try {
+      const {data, error} = neu
+        ? await sb.auth.signUp({email, password:pw, options:{emailRedirectTo:location.origin + location.pathname}})
+        : await sb.auth.signInWithPassword({email, password:pw});
+      if (error) throw error;
+      if (neu && !(data && data.session)) {
+        LOGIN.modus = "login"; LOGIN.ok = true;
+        LOGIN.msg = "Fast geschafft: Wir haben dir eine E-Mail geschickt. Tipp dort auf den Link, dann meld dich hier mit E-Mail und Passwort an.";
+        return zeichneNeu();
+      }
+      location.hash = "#/";
+    } catch (err) {
+      const t = String(err && err.message || "");
+      $("#l-msg").textContent = /registered|already/i.test(t) ? "Mit dieser E-Mail gibt es schon ein Konto. Meld dich einfach an."
+        : /confirm/i.test(t) ? "Die E-Mail ist noch nicht bestätigt. Schau in dein Postfach, auch im Spam."
+        : /rate|limit|seconds/i.test(t) ? "Zu viele Versuche. Warte kurz und versuch es nochmal."
+        : neu ? "Das Konto konnte nicht angelegt werden. Stimmt die E-Mail?" : "Anmelden hat nicht geklappt. Stimmen E-Mail und Passwort?";
+    } finally { const b2 = $("#l-btn"); if (b2) b2.disabled = false; }
   }
   if (e.target.id === "setup") {
     for (const w of ["p1", "p2"]) ST.meta[w].name = $(`#n-${w}`).value.trim();
-    if (!ST.meta.p1.name || !ST.meta.p2.name) return toast("Bitte beide Namen eintragen.");
-    save("meta"); location.hash = ST.active ? "#/einst" : "#/profil"; render();
+    if (!ST.meta.p1.name) return toast("Bitte trag deinen Namen ein.");
+    if (!zweiPersonen()) ST.active = "p1";
+    save("meta"); location.hash = zweiPersonen() && !ST.active ? "#/profil" : "#/"; render();
   }
 });
 window.addEventListener("hashchange", () => { render(); scrollTo(0, 0); });
